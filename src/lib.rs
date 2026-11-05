@@ -7,14 +7,14 @@ use std::fmt;
 
 /// Errors produced by this component. Fail-fast: errors are returned, not panicked.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum Sigmaos_libudev0_shimError {
+pub enum Libudev0ShimError {
     /// The requested operation is not valid in the current state.
     InvalidState,
     /// Input failed validation.
     InvalidInput(String),
 }
 
-impl fmt::Display for Sigmaos_libudev0_shimError {
+impl fmt::Display for Libudev0ShimError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::InvalidState => write!(f, "invalid state"),
@@ -23,20 +23,20 @@ impl fmt::Display for Sigmaos_libudev0_shimError {
     }
 }
 
-impl std::error::Error for Sigmaos_libudev0_shimError {}
+impl std::error::Error for Libudev0ShimError {}
 
 /// Core component type. Holds configuration; performs no I/O by default.
 #[derive(Debug, Clone, Default)]
-pub struct Sigmaos_libudev0_shim {
+pub struct Libudev0Shim {
     name: String,
 }
 
-impl Sigmaos_libudev0_shim {
+impl Libudev0Shim {
     /// Create a new component instance. Fails fast on empty names.
-    pub fn new(name: impl Into<String>) -> Result<Self, Sigmaos_libudev0_shimError> {
+    pub fn new(name: impl Into<String>) -> Result<Self, Libudev0ShimError> {
         let name = name.into();
         if name.trim().is_empty() {
-            return Err(Sigmaos_libudev0_shimError::InvalidInput("name must not be empty".into()));
+            return Err(Libudev0ShimError::InvalidInput("name must not be empty".into()));
         }
         Ok(Self { name })
     }
@@ -47,9 +47,9 @@ impl Sigmaos_libudev0_shim {
     }
 
     /// Perform the component's primary action. Returns a deterministic result.
-    pub fn run(&self) -> Result<String, Sigmaos_libudev0_shimError> {
+    pub fn run(&self) -> Result<String, Libudev0ShimError> {
         if self.name.is_empty() {
-            return Err(Sigmaos_libudev0_shimError::InvalidState);
+            return Err(Libudev0ShimError::InvalidState);
         }
         Ok(format!("{}: ok", self.name))
     }
@@ -62,18 +62,18 @@ mod tests {
     #[test]
     fn new_rejects_empty_name() {
         // Arrange / Act / Assert
-        assert!(matches!(Sigmaos_libudev0_shim::new("  "), Err(Sigmaos_libudev0_shimError::InvalidInput(_))));
+        assert!(matches!(Libudev0Shim::new("  "), Err(Libudev0ShimError::InvalidInput(_))));
     }
 
     #[test]
     fn run_returns_deterministic_result() {
-        let c = Sigmaos_libudev0_shim::new("test").unwrap();
+        let c = Libudev0Shim::new("test").unwrap();
         assert_eq!(c.run().unwrap(), "test: ok");
     }
 
     #[test]
     fn name_is_accessible() {
-        let c = Sigmaos_libudev0_shim::new("abc").unwrap();
+        let c = Libudev0Shim::new("abc").unwrap();
         assert_eq!(c.name(), "abc");
     }
 }
