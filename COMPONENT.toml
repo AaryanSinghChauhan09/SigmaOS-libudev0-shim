@@ -3,7 +3,7 @@ name = "SigmaOS-libudev0-shim"
 tier = 2
 stability = "scaffold"
 language = "rust"
-description = "libudev0-shim component"
+description = "SigmaOS libudev0-shim component (Arch Linux inspired)"
 upstream = []
 
 [contract]
